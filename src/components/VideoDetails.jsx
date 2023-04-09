@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import ReactPlayer from "react-player/youtube";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import { AiOutlineLike } from "react-icons/ai";
+import { AiOutlineLike, AiTwotoneLike } from "react-icons/ai";
 import { abbreviateNumber } from "js-abbreviation-number";
 
 import { fetchDataFromApi } from "../utils/api";
@@ -10,6 +10,7 @@ import { Context } from "../context/contextApi";
 import SuggestionVideoCard from "./SuggestionVideoCard";
 
 const VideoDetails = () => {
+  const [isLike, setIsLike] = useState(true);
   const [video, setVideo] = useState();
   const [relatedVideos, setRelatedVideos] = useState();
   const { id } = useParams();
@@ -24,7 +25,6 @@ const VideoDetails = () => {
   const fetchVideoDetails = () => {
     setLoading(true);
     fetchDataFromApi(`video/details/?id=${id}`).then((res) => {
-      // console.log(res);
       setVideo(res);
       setLoading(false);
     });
@@ -33,7 +33,6 @@ const VideoDetails = () => {
   const fetchRelatedVideos = () => {
     setLoading(true);
     fetchDataFromApi(`video/related-contents/?id=${id}`).then((res) => {
-      console.log(res);
       setRelatedVideos(res);
       setLoading(false);
     });
@@ -80,8 +79,16 @@ const VideoDetails = () => {
               </div>
             </div>
             <div className="flex text-white mt-4 md:mt-0">
-              <div className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15]">
-                <AiOutlineLike className="text-xl text-white mr-2" />
+              <div
+                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15]"
+                onClick={() => setIsLike(!isLike)}
+              >
+                {isLike ? (
+                  <AiOutlineLike className="text-xl text-white mr-2" />
+                ) : (
+                  <AiTwotoneLike className="text-xl text-white mr-2" />
+                )}
+
                 {`${abbreviateNumber(video?.stats?.views, 2)} Likes`}
               </div>
               <div className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] ml-4">
